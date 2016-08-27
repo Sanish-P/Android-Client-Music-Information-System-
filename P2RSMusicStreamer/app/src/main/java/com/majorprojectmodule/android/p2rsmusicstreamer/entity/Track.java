@@ -8,6 +8,8 @@ import android.os.Parcelable;
  */
 public class Track implements Parcelable {
 
+    private int id;
+
     private String title;
 
     private String streamURL;
@@ -20,13 +22,15 @@ public class Track implements Parcelable {
     public Track() {
     }
 
-    public Track(String title, String streamURL, String artworkURL) {
+    public Track(int id ,String title, String streamURL, String artworkURL) {
+        this.id = id;
         this.title = title;
         this.streamURL = streamURL;
         this.artworkURL = artworkURL;
     }
 
     protected Track(Parcel in){
+        id = in.readInt();
         title = in.readString();
         streamURL = in.readString();
         artworkURL = in.readString();
@@ -43,6 +47,10 @@ public class Track implements Parcelable {
             return new Track[size];
         }
     };
+
+    public int getId() {return id;}
+
+    public void setId(int id) {this.id = id;}
 
     public String getTitle() {return title;}
 
@@ -74,6 +82,7 @@ public class Track implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(id);
         parcel.writeString(title);
         parcel.writeString(streamURL);
         parcel.writeString(artworkURL);

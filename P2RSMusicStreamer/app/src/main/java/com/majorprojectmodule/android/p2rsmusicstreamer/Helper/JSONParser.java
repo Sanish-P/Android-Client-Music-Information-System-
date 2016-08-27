@@ -28,11 +28,13 @@ public class JSONParser {
 
             JSONObject trackJson = tracks.getJSONObject(i);
 
+            tr.setId(trackJson.getInt("trackId"));
+
             tr.setTitle(trackJson.getString("trackTitle"));
 
             tr.setArtworkURL(trackJson.getString("albumArtURL"));
 
-            tr.setStreamURL(trackJson.getString("streamURL").replace(" ","%20"));
+            tr.setStreamURL((trackJson.getString("streamURL") + trackJson.getString("trackSource")).replace(" ","%20"));
 
             trackList.add(tr);
         }

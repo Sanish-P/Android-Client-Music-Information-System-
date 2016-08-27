@@ -1,7 +1,8 @@
 package com.majorprojectmodule.android.p2rsmusicstreamer;
 
+import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,8 +13,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.Volley;
 import com.majorprojectmodule.android.p2rsmusicstreamer.Helper.JSONParser;
 import com.majorprojectmodule.android.p2rsmusicstreamer.adapter.TrackAdapter;
 import com.majorprojectmodule.android.p2rsmusicstreamer.entity.Track;
@@ -35,7 +34,6 @@ import java.util.List;
 public class MainActivityFragment extends Fragment {
 
     private final String LOG_TAG = MainActivityFragment.class.getSimpleName();
-    private RequestQueue requestQueue;
 
     private List<Track> trackList;
     private TrackAdapter trackAdapter;
@@ -53,9 +51,6 @@ public class MainActivityFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-
-        requestQueue = Volley.newRequestQueue(getActivity());
-
 
         trackList = new ArrayList();
 
@@ -79,6 +74,9 @@ public class MainActivityFragment extends Fragment {
             }
         });
 
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("USER", Context.MODE_PRIVATE);
+
+        Log.v("USERNAME",sharedPreferences.getString("userName","NONE"));
 
         return rootView;
 
@@ -86,25 +84,7 @@ public class MainActivityFragment extends Fragment {
     private void updateTrackList(){
         new FetchTrackTask().execute();
     }
-    private Uri getTrackUri(){
 
-        final String BASE_URL="https://ws.audioscrobbler.com/2.0/?method=chart.gettoptracks";
-        final String API_KEY_PARAM ="api_key";
-        final String API_KEY ="7a920857049bbc6781fc0545d845d684";
-        final String FORMAT_PARAM="format";
-        final String FORMAT ="json";
-        final String LIMIT_PARAM="limit";
-        final String LIMIT="25";
-
-        Uri uri = Uri.parse(BASE_URL).buildUpon()
-                .appendQueryParameter(API_KEY_PARAM,API_KEY)
-                .appendQueryParameter(FORMAT_PARAM,FORMAT)
-                .appendQueryParameter(LIMIT_PARAM,LIMIT)
-                .build();
-
-        Log.v(LOG_TAG,uri.toString());
-        return uri;
-    }
     public class FetchTrackTask extends AsyncTask<Void ,Void ,List<Track>> {
 
         private final String LOG_TAG = FetchTrackTask.class.getSimpleName();
@@ -124,7 +104,7 @@ public class MainActivityFragment extends Fragment {
 
             try {
 
-                URL url = new URL("http://192.168.10.118:8084/AdminApp/track/getAll");
+                URL url = new URL("http://192.168.100.6:8084/AdminApp/track/getAll");
 
                 // Create the request to OpenWeatherMap, and open the connection
                 urlConnection = (HttpURLConnection) url.openConnection();
